@@ -27,18 +27,6 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         
     }
     
-    // MARK: - QuestionFactoryDelegate
-    func didReceiveNextQuestion(question: QuizQuestion?) {
-        guard let question = question else { return }
-
-        currentQuestion = question
-        let viewModel = convert(model: question)
-        
-        DispatchQueue.main.async { [weak self] in
-            self?.show(quiz: viewModel)
-        }
-    }
-    
     @IBAction private func yesButtonClicked(_ sender: UIButton) {
         guard let currentQuestion = currentQuestion else { return }
         
@@ -111,7 +99,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
                 Ваш результат: \(correctAnswers)/10
                 Количество сыгранных квизов: \(statisticService.gamesCount)
                 Рекорд: \(bestResult.correct)/\(bestResult.total) (\(bestResult.date.dateTimeString))
-                Средняя точность: \(String(format: "%.2f", statisticService.totalAccuracy*100))%
+                Средняя точность: \(String(format: "%.2f", statisticService.totalAccuracy * 100))%
             """
             let viewModel = QuizResultsViewModel(
                 title: "Этот раунд окончен!",
@@ -127,6 +115,18 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
 }
 
 extension MovieQuizViewController {
+    // MARK: - QuestionFactoryDelegate
+    func didReceiveNextQuestion(question: QuizQuestion?) {
+        guard let question = question else { return }
+        
+        currentQuestion = question
+        let viewModel = convert(model: question)
+        
+        DispatchQueue.main.async { [weak self] in
+            self?.show(quiz: viewModel)
+        }
+    }
+    
     func viewControllerForAlertPresentation() -> UIViewController {
         return self
     }
