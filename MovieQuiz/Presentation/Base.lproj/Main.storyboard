@@ -47,7 +47,6 @@
                                     </stackView>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="jBa-Gv-oM5" userLabel="Preview Image">
                                         <rect key="frame" x="0.0" y="43.5" width="374" height="561"/>
-                                        <color key="backgroundColor" name="YP White"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="jBa-Gv-oM5" secondAttribute="height" multiplier="2:3" id="KFs-2T-NZH"/>
                                         </constraints>
@@ -60,7 +59,7 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="d7n-Jb-5B7">
                                         <rect key="frame" x="0.0" y="624.5" width="374" height="89.5"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Рейтинг этого фильма меньше, чем 5?" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qqA-4s-QeP" userLabel="Question Label">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qqA-4s-QeP" userLabel="Question Label">
                                                 <rect key="frame" x="42" y="13" width="290" height="63.5"/>
                                                 <fontDescription key="fontDescription" name="YSDisplay-Bold" family="YS Display" pointSize="23"/>
                                                 <color key="textColor" name="YP White"/>
@@ -119,19 +118,29 @@
                                     </stackView>
                                 </subviews>
                             </stackView>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="5Ey-gk-dUM">
+                                <rect key="frame" x="197" y="438" width="20" height="20"/>
+                                <color key="backgroundColor" name="YP Background"/>
+                                <color key="color" name="YP White"/>
+                            </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" name="YP Black"/>
                         <constraints>
+                            <constraint firstItem="5Ey-gk-dUM" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="0Um-kX-5Q8"/>
                             <constraint firstItem="1IQ-oa-ryH" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="1R7-WR-4KR"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="1IQ-oa-ryH" secondAttribute="trailing" constant="20" id="7fL-BW-yzR"/>
                             <constraint firstItem="1IQ-oa-ryH" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="10" id="Bvh-dL-IJQ"/>
+                            <constraint firstItem="5Ey-gk-dUM" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="wSt-kd-iqg"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="activityIndicator" destination="5Ey-gk-dUM" id="PQ2-nR-7XB"/>
                         <outlet property="counterLabel" destination="TvM-de-R6Q" id="Vgn-8r-N2Z"/>
                         <outlet property="imageView" destination="jBa-Gv-oM5" id="6fc-0i-v1s"/>
+                        <outlet property="noButton" destination="daJ-yB-mRY" id="CFe-ze-mIF"/>
                         <outlet property="textLabel" destination="qqA-4s-QeP" id="Bkf-lh-rDC"/>
+                        <outlet property="yesButton" destination="x7J-JC-zcP" id="0Nb-Xw-bQX"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -140,6 +149,9 @@
         </scene>
     </scenes>
     <resources>
+        <namedColor name="YP Background">
+            <color red="0.10196078431372549" green="0.10588235294117647" blue="0.13333333333333333" alpha="0.5" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
         <namedColor name="YP Black">
             <color red="0.10196078431372549" green="0.10588235294117647" blue="0.13333333333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>

@@ -8,93 +8,70 @@
 import Foundation
 
 final class QuestionFactory: QuestionFactoryProtocol {
+    private var moviesLoader: MoviesLoading
     weak var delegate: QuestionFactoryDelegate?
-    private var shownQuestionsIndexes: Set<Int> = []
+    private var movies: [MostPopularMovie] = []
     
-    init(delegate: QuestionFactoryDelegate) {
+    init(moviesLoader: MoviesLoading, delegate: QuestionFactoryDelegate) {
+        self.moviesLoader = moviesLoader
         self.delegate = delegate
     }
     
-    private let questions: [QuizQuestion] = [
-        QuizQuestion(
-            image: "The Godfather",
-            text: "Рейтинг этого фильма больше чем 6?",
-            realRating: 9.2,
-            correctAnswer: true
-        ),
-        QuizQuestion(
-            image: "The Dark Knight",
-            text: "Рейтинг этого фильма больше чем 6?",
-            realRating: 9,
-            correctAnswer: true
-        ),
-        QuizQuestion(
-            image: "Kill Bill",
-            text: "Рейтинг этого фильма больше чем 6?",
-            realRating: 8.1,
-            correctAnswer: true
-        ),
-        QuizQuestion(
-            image: "The Avengers",
-            text: "Рейтинг этого фильма больше чем 6?",
-            realRating: 8,
-            correctAnswer: true
-        ),
-        QuizQuestion(
-            image: "Deadpool",
-            text: "Рейтинг этого фильма больше чем 6?",
-            realRating: 8,
-            correctAnswer: true
-        ),
-        QuizQuestion(
-            image: "The Green Knight",
-            text: "Рейтинг этого фильма больше чем 6?",
-            realRating: 6.6,
-            correctAnswer: true
-        ),
-        QuizQuestion(
-            image: "Old",
-            text: "Рейтинг этого фильма больше чем 6?",
-            realRating: 5.8,
-            correctAnswer: false
-        ),
-        QuizQuestion(
-            image: "The Ice Age Adventures of Buck Wild",
-            text: "Рейтинг этого фильма больше чем 6?",
-            realRating: 4.3,
-            correctAnswer: false
-        ),
-        QuizQuestion(
-            image: "Tesla",
-            text: "Рейтинг этого фильма больше чем 6?",
-            realRating: 5.1,
-            correctAnswer: false
-        ),
-        QuizQuestion(
-            image: "Vivarium",
-            text: "Рейтинг этого фильма больше чем 6?",
-            realRating: 5.8,
-            correctAnswer: false
-        )
-    ]
-    
     func requestNextQuestion() {
-        let availableIndexes = (0..<questions.count).filter { !shownQuestionsIndexes.contains($0) }
-        
-        if availableIndexes.isEmpty {
-            shownQuestionsIndexes.removeAll()
-            requestNextQuestion()
-            return
+        DispatchQueue.global().async { [weak self] in
+            guard let self = self else { return }
+            let index = (0..<self.movies.count).randomElement() ?? 0
+            
+            guard let movie = self.movies[safe: index] else { return }
+            
+            var imageData: Data
+            
+            do {
+                imageData = try Data(contentsOf: movie.resizedImageURL)
+            } catch {
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
+                    self.delegate?.didFailToLoadData(with: NSError(
+                        domain: "ImageLoading",
+                        code: -1,
+                        userInfo: [NSLocalizedDescriptionKey: "Не удалось загрузить изображение постера для фильма."]
+                    ))
+                }
+                return
+            }
+            
+            let randomRating = Float.random(in: 5.0...9.0).rounded(toPlaces: 1)
+            let comparisonType = Bool.random() ? "больше" : "меньше"
+            let text = "Рейтинг этого фильма \(comparisonType) чем \(randomRating)?"
+            
+            let rating = Float(movie.rating) ?? 0
+            let correctAnswer = comparisonType == "больше" ? rating > randomRating : rating < randomRating
+            
+            let question = QuizQuestion(
+                image: imageData,
+                text: text,
+                correctAnswer: correctAnswer
+            )
+            
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                self.delegate?.didReceiveNextQuestion(question: question)
+            }
         }
-        
-        guard let index = availableIndexes.randomElement() else {
-            delegate?.didReceiveNextQuestion(question: nil)
-            return
+    }
+    
+    func loadData() {
+        moviesLoader.loadMovies { [weak self] result in
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                switch result {
+                case .success(let mostPopularMovies):
+                    self.movies = mostPopularMovies.items
+                    self.delegate?.didLoadDataFromServer()
+                case .failure(let error):
+                    self.delegate?.didFailToLoadData(with: error)
+                }
+            }
         }
-        
-        shownQuestionsIndexes.insert(index)
-        
-        let question = questions[safe: index]
-        delegate?.didReceiveNextQuestion(question: question)
     }
 }
