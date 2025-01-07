@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A542DC942D2D21F5003D685D /* Float+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A542DC932D2D21EE003D685D /* Float+Extensions.swift */; };
 		A5714B982D156617007EE7F2 /* QuestionFactoryDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5714B972D15660F007EE7F2 /* QuestionFactoryDelegate.swift */; };
 		A5714B9A2D158191007EE7F2 /* AlertModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5714B992D15818E007EE7F2 /* AlertModel.swift */; };
 		A5714B9C2D158256007EE7F2 /* AlertPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5714B9B2D158251007EE7F2 /* AlertPresenter.swift */; };
@@ -34,6 +35,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A542DC932D2D21EE003D685D /* Float+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Float+Extensions.swift"; sourceTree = "<group>"; };
 		A5714B972D15660F007EE7F2 /* QuestionFactoryDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionFactoryDelegate.swift; sourceTree = "<group>"; };
 		A5714B992D15818E007EE7F2 /* AlertModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertModel.swift; sourceTree = "<group>"; };
 		A5714B9B2D158251007EE7F2 /* AlertPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertPresenter.swift; sourceTree = "<group>"; };
@@ -162,6 +164,7 @@
 				AD5EE5DD284D7887003966EF /* UIColor+Extensions.swift */,
 				AD7AFA542836189F00399704 /* Array+Extensions.swift */,
 				AD77F5732857F8810062FB14 /* Date+Extensions.swift */,
+				A542DC932D2D21EE003D685D /* Float+Extensions.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -249,6 +252,7 @@
 				AD7AFA552836189F00399704 /* Array+Extensions.swift in Sources */,
 				A5714BA22D158B10007EE7F2 /* StatisticServiceProtocol.swift in Sources */,
 				A5714BA02D158A8A007EE7F2 /* GameResult.swift in Sources */,
+				A542DC942D2D21F5003D685D /* Float+Extensions.swift in Sources */,
 				A5914BEA2D146D3F003075DB /* QuestionFactoryProtocol.swift in Sources */,
 				A5714B9E2D158393007EE7F2 /* AlertPresenterDelegate.swift in Sources */,
 				A5714B982D156617007EE7F2 /* QuestionFactoryDelegate.swift in Sources */,

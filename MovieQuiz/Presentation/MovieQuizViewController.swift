@@ -8,7 +8,6 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
     private var currentQuestion: QuizQuestion?
     private var alertPresenter: AlertPresenter?
     private var statisticService: StatisticService?
-    private var buttonsInteractionEnabled: Bool = true
     
     @IBOutlet private weak var imageView: UIImageView!
     @IBOutlet private weak var textLabel: UILabel!
@@ -27,18 +26,24 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         alertPresenter = AlertPresenter(delegate: self)
         statisticService = StatisticService()
         
+        activityIndicator.hidesWhenStopped = true
+        
         showLoadingIndicator()
         questionFactory?.loadData()
     }
     
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+    
     @IBAction private func yesButtonClicked(_ sender: UIButton) {
-        guard buttonsInteractionEnabled, let currentQuestion = currentQuestion else { return }
+        guard let currentQuestion = currentQuestion else { return }
         
         showAnswerResult(isCorrect: currentQuestion.correctAnswer)
     }
     
     @IBAction private func noButtonClicked(_ sender: UIButton) {
-        guard buttonsInteractionEnabled, let currentQuestion = currentQuestion else { return }
+        guard let currentQuestion = currentQuestion else { return }
         
         showAnswerResult(isCorrect: !currentQuestion.correctAnswer)
     }
@@ -58,8 +63,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         
         imageView.layer.borderWidth = 0
         
-        yesButton.isUserInteractionEnabled = true
-        noButton.isUserInteractionEnabled = true
+        setButtonsEnabled(isEnabled: true)
     }
     
     private func show(quiz result: QuizResultsViewModel) {
@@ -80,7 +84,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
     }
     
     private func showAnswerResult(isCorrect: Bool) {
-        buttonsInteractionEnabled = false
+        setButtonsEnabled(isEnabled: false)
         
         if isCorrect {
             correctAnswers += 1
@@ -98,8 +102,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
     }
     
     private func showNextQuestionOrResults() {
-        yesButton.isUserInteractionEnabled = false
-        noButton.isUserInteractionEnabled = false
+        setButtonsEnabled(isEnabled: false)
         
         if currentQuestionIndex == questionsAmount - 1 {
             guard let statisticService = statisticService else { return }
@@ -119,23 +122,19 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
                 text: text,
                 buttonText: "Сыграть ещё раз"
             )
-
+            
             show(quiz: viewModel)
         } else {
             currentQuestionIndex += 1
             questionFactory?.requestNextQuestion()
         }
-        
-        buttonsInteractionEnabled = true
     }
     
     private func showLoadingIndicator() {
-        activityIndicator.isHidden = false
         activityIndicator.startAnimating()
     }
     
     private func hideLoadingIndicator() {
-        activityIndicator.isHidden = true
         activityIndicator.stopAnimating()
     }
     
@@ -152,10 +151,16 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
             self.currentQuestionIndex = 0
             self.correctAnswers = 0
             
-            self.questionFactory?.requestNextQuestion()
+            self.showLoadingIndicator()
+            self.questionFactory?.loadData()
         }
         
         alertPresenter?.showAlert(alertModel: alertModel)
+    }
+    
+    func setButtonsEnabled(isEnabled: Bool) {
+        yesButton.isEnabled = isEnabled
+        noButton.isEnabled = isEnabled
     }
 }
 
@@ -177,7 +182,7 @@ extension MovieQuizViewController {
     }
     
     func didLoadDataFromServer() {
-        activityIndicator.isHidden = true
+        hideLoadingIndicator()
         questionFactory?.requestNextQuestion()
     }
     

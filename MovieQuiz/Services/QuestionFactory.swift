@@ -24,17 +24,28 @@ final class QuestionFactory: QuestionFactoryProtocol {
             
             guard let movie = self.movies[safe: index] else { return }
             
-            var imageData = Data()
+            var imageData: Data
             
             do {
                 imageData = try Data(contentsOf: movie.resizedImageURL)
             } catch {
-                print("Failed to load image")
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
+                    self.delegate?.didFailToLoadData(with: NSError(
+                        domain: "ImageLoading",
+                        code: -1,
+                        userInfo: [NSLocalizedDescriptionKey: "Не удалось загрузить изображение постера для фильма."]
+                    ))
+                }
+                return
             }
             
+            let randomRating = Float.random(in: 5.0...9.0).rounded(toPlaces: 1)
+            let comparisonType = Bool.random() ? "больше" : "меньше"
+            let text = "Рейтинг этого фильма \(comparisonType) чем \(randomRating)?"
+            
             let rating = Float(movie.rating) ?? 0
-            let text = "Рейтинг этого фильма больше чем 7?"
-            let correctAnswer = rating > 7
+            let correctAnswer = comparisonType == "больше" ? rating > randomRating : rating < randomRating
             
             let question = QuizQuestion(
                 image: imageData,
@@ -46,7 +57,6 @@ final class QuestionFactory: QuestionFactoryProtocol {
                 guard let self = self else { return }
                 self.delegate?.didReceiveNextQuestion(question: question)
             }
-            
         }
     }
     

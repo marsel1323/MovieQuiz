@@ -26,8 +26,13 @@ struct MoviesLoader: MoviesLoading {
             switch result {
             case .success(let data):
                 do {
-                    let decoder = JSONDecoder()
-                    let movies = try decoder.decode(MostPopularMovies.self, from: data)
+                    let movies = try JSONDecoder().decode(MostPopularMovies.self, from: data)
+                    
+                    if !movies.errorMessage.isEmpty {
+                        handler(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: movies.errorMessage])))
+                        return
+                    }
+                    
                     handler(.success(movies))
                 } catch {
                     handler(.failure(error))
